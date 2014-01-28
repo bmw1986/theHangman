@@ -8,14 +8,15 @@ import javax.swing.JFrame;
 
 import thePackage.Paint;
 
-
 public class Main {
+	
+	public void main(String[] args) {
 
-	public static void main(String[] args) {
-		
-		final JFrame theFrame = new JFrame();
+		JFrame theFrame = new JFrame();
 		
 		Paint.paintStage(null);
+		
+		theFrame.repaint();
 		
 		KeyListener keyListener = new KeyListener() {
 			
@@ -26,32 +27,32 @@ public class Main {
 				if (key == KeyEvent.VK_1) {
 					System.out.println("You have pressed an \"1\" on the keyboard!");
 					Paint.paintHead(null);
-					theFrame.repaint();
+//					theFrame.repaint();
 				}
 				if (key == KeyEvent.VK_2) {
 					System.out.println("You have pressed an \"2\" on the keyboard!");
 					Paint.paintBody(null);
-					theFrame.repaint();
+//					theFrame.repaint();
 				}
 				if (key == KeyEvent.VK_3) {
 					System.out.println("You have pressed an \"3\" on the keyboard!");
 					Paint.paintLeftArm(null);
-					theFrame.repaint();
+//					theFrame.repaint();
 				}
 				if (key == KeyEvent.VK_4) {
 					System.out.println("You have pressed an \"4\" on the keyboard!");
 					Paint.paintRightArm(null);
-					theFrame.repaint();
+//					theFrame.repaint();
 				}
 				if (key == KeyEvent.VK_5) {
 					System.out.println("You have pressed an \"5\" on the keyboard!");
 					Paint.paintLeftLeg(null);
-					theFrame.repaint();
+//					theFrame.repaint();
 				}
 				if (key == KeyEvent.VK_6) {
 					System.out.println("You have pressed an \"6\" on the keyboard!");
 					Paint.paintRightLeg(null);
-					theFrame.repaint();
+//					theFrame.repaint();
 				}
 			}
 			
@@ -67,10 +68,10 @@ public class Main {
 		};
 		
 		theFrame.addKeyListener(keyListener);
-		
 		theFrame.pack();
 	    theFrame.setSize(new Dimension(800, 600));
 	    theFrame.setVisible(true);
 
 	}
+	
 }
