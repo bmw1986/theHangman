@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-
 public class readFromFile {
 
 	static String findWord()  throws IOException{
@@ -27,10 +26,7 @@ public class readFromFile {
 		}
 		
 		int randomNum = 0 + (int)(Math.random()*10);
-		
-		String theWord = theWords[randomNum];
-		
+		String theWord = theWords[randomNum];	
 		return theWord;
 	}
-	
 }
