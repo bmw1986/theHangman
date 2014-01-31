@@ -18,23 +18,25 @@ public class Paint extends JPanel {
 	
     public static void getStatusOfPerson (int bodyPart, int doneYet) {
     	
-    	if (doneYet == 0) {
-	    	if (bodyPart == 1)
-	    		head = true;
-	    	else if (bodyPart == 2)
-	    		body = true;
-	    	else if (bodyPart == 3)
-	    		leftArm = true;
-	    	else if (bodyPart == 4)
-	    		rightArm = true;
-	    	else if (bodyPart == 5)
-	    		leftLeg = true;
-	    	else if (bodyPart == 6)
-	    		rightLeg = true;
-    	} else if (doneYet == 1)
+	
+    	if (bodyPart == 1)
+    		head = true;
+    	else if (bodyPart == 2)
+    		body = true;
+    	else if (bodyPart == 3)
+    		leftArm = true;
+    	else if (bodyPart == 4)
+    		rightArm = true;
+    	else if (bodyPart == 5)
+    		leftLeg = true;
+    	else if (bodyPart == 6)
+    		rightLeg = true; 
+	
+    	if (doneYet == 1)
     		win = true;
     	else if (doneYet == 2)
-    		lose = true; }
+    		lose = true;
+    }
     
     
 	@Override 

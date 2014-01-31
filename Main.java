@@ -66,6 +66,8 @@ public class Main extends JPanel {
 						} else {
 							currentBodyPart++;
 							System.out.println("Wow, dude you suck.");
+							Paint.getStatusOfPerson(6, 2);
+							theFrame.repaint();
 							doneYet = 2; }
 					}
 					else {
@@ -73,6 +75,7 @@ public class Main extends JPanel {
 						if (distinctChars == winnerYet) {
 							System.out.println("You've won!");
 							Paint.getStatusOfPerson(0, 1);
+							theFrame.repaint();
 							doneYet = 1; }
 						else
 							System.out.println("Correct");
