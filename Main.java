@@ -67,8 +67,7 @@ public class Main extends JPanel {
 						} else {
 							currentBodyPart++;
 							System.out.println("YOU LOSE HAHAHAHAH");
-							doneYet = 2;
-						}
+							doneYet = 2; }
 					}
 					else {
 						winnerYet++;
