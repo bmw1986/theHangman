@@ -19,7 +19,7 @@ public class Main extends JPanel {
 		final JFrame theFrame = new JFrame();
 		
 		final String theWord = ReadFromFile.findWord();
-	   	final int lengthOfWord = theWord.length();
+	   	final int indvisualChars = GameLogic.determineIndivisualChars(theWord);
 	   	final String[] usedLetters = new String[20];
 	   	
 	   	System.out.println(theWord);
@@ -38,8 +38,9 @@ public class Main extends JPanel {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				int key = e.getKeyCode();
-				
+				keepGoing = true;	
 				String letter = Character.toString((char) (key+32));
+				System.out.println(letter);
 				
 				outerLoop:
 				if (lettersInArray >= 0 ) {
@@ -48,7 +49,6 @@ public class Main extends JPanel {
 							keepGoing = false;
 							System.out.println("FALSE");
 							break outerLoop;
-							
 						}
 					}
 				}
@@ -57,25 +57,25 @@ public class Main extends JPanel {
 					
 					usedLetters[lettersInArray] = letter;
 					lettersInArray = lettersInArray + 1;
-					System.out.println(letter);
 					CorrectOrNot = theWord.contains(letter);
 					
 					if (CorrectOrNot == false) {
 						if (currentBodyPart < 5) {
 							currentBodyPart++;
-							System.out.println(currentBodyPart);
+							System.out.println("Incorrect");
 						} else {
 							currentBodyPart++;
-							System.out.println("YOU LOSE HAHAHAHAH");
+							System.out.println("Dude, you suck");
 							doneYet = 2; }
 					}
 					else {
 						winnerYet++;
-						if (lengthOfWord == winnerYet) {
-							System.out.println("YOU'VE WON");
+						if (indvisualChars == winnerYet) {
+							System.out.println("You've won!");
+							Paint.getStatusOfPerson(0, 1);
 							doneYet = 1; }
 						else
-							System.out.println("Correct Letter Pressed");
+							System.out.println("Correct");
 					}
 					
 					if (currentBodyPart == 1) {
@@ -101,8 +101,6 @@ public class Main extends JPanel {
 					if (currentBodyPart == 6) {
 						Paint.getStatusOfPerson(6, doneYet);
 						theFrame.repaint(); }
-				
-					keepGoing = true;	
 				}
 			}
 			
