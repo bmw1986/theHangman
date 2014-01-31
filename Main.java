@@ -19,11 +19,11 @@ public class Main extends JPanel {
 		final JFrame theFrame = new JFrame();
 		
 		final String theWord = ReadFromFile.findWord();
-	   	final int indvisualChars = GameLogic.determineIndivisualChars(theWord);
+	   	final int distinctChars = GameLogic.determineIndivisualChars(theWord);
 	   	final String[] usedLetters = new String[20];
 	   	
 	   	System.out.println(theWord);
-			
+		System.out.println(distinctChars);
 		
 		KeyListener keyListener = new KeyListener() {
 		
@@ -47,7 +47,7 @@ public class Main extends JPanel {
 					for (int i=0; i < (lettersInArray); i++) {
 						if (letter.equals(usedLetters[i])) {
 							keepGoing = false;
-							System.out.println("FALSE");
+							System.out.println("Dude, you've already used that letter...step up your game.");
 							break outerLoop;
 						}
 					}
@@ -65,12 +65,12 @@ public class Main extends JPanel {
 							System.out.println("Incorrect");
 						} else {
 							currentBodyPart++;
-							System.out.println("Dude, you suck");
+							System.out.println("Wow, dude you suck.");
 							doneYet = 2; }
 					}
 					else {
 						winnerYet++;
-						if (indvisualChars == winnerYet) {
+						if (distinctChars == winnerYet) {
 							System.out.println("You've won!");
 							Paint.getStatusOfPerson(0, 1);
 							doneYet = 1; }
