@@ -10,7 +10,7 @@ public class ReadFromFile {
 		BufferedReader in = null;
 		String[] theWords = new String[10];
 		try {
-			in = new BufferedReader(new FileReader("/Volumes/The Data/Freddy/theWords.txt"));
+			in = new BufferedReader(new FileReader("/Users/Freddy/theWords.txt"));
 			
 			int index = 0;
 			String l;
