@@ -21,8 +21,7 @@ public class GameLogic {
 		for (int j=0; j<length; j++) {
 			for (int k=0; k<length; k++) {
 				if (charsOfWord[j] == (charsOfWord[k])) {
-					repeats++;
-				}
+					repeats++; }
 			}
 		}
 		
