@@ -1,33 +1,26 @@
 package thePackage;
 
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
+import gnu.io.SerialPortEvent;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.comm.SerialPortEventListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class GUI extends JPanel {
+public class GUI extends JPanel implements SerialPortEventListener {
 	
     static boolean head = false;  static boolean body = false;  static boolean leftArm = false;
     static boolean rightArm = false;  static boolean leftLeg = false;  static boolean rightLeg = false;
-	    
+    private InputStream input = null;  static String outPut = "";
+    static String logText = "";
     public static void main(String[] args) throws IOException {
 		
-    	
-    	///////////////////////////////////////////////////////////////
-    	
-//    	java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new popUpGUI().setVisible(true);
-//            }
-//        });
-        
     	new popUpGUI().setVisible(true);
-    	
-    	///////////////////////////////////////////////////////////////
     	
     	final JFrame theFrame = new JFrame();
 		
@@ -45,20 +38,30 @@ public class GUI extends JPanel {
 		int lettersInArray = 0;
 		boolean keepGoing = true;
 		
-
-		keepGoing = true;	
-		//String letter = Character.toString((char) (key+32));
-		String letter = Communicator.getOutPut();
-		System.out.println(letter);
-		
+		//String letter = Communicator.getOutPut();
+		String letter = logText;
 		int key = toAscii(letter);
 		
-		if (key == 47)
+		if (key == 109)
 			key = 9;
 		
 		Communicator.writeData(key);
 		System.out.println("This is the value of key: " + key);
-
+		
+		letter = Communicator.getOutPut();
+		key = toAscii(letter);
+		
+		if (key == 109)
+			key = 9;
+		
+		Communicator.writeData(key);
+		System.out.println("This is the value of key: " + key);
+		
+		keepGoing = true;	
+//			String letter = Communicator.getOutPut();
+//		String letter = System.console().readLine();
+		System.out.println(letter);
+		
 		outerLoop:
 		if (lettersInArray >= 0 ) {
 			for (int i=0; i < (lettersInArray); i++) {
@@ -121,13 +124,14 @@ public class GUI extends JPanel {
 			if (currentBodyPart == 6) {
 				Paint.getStatusOfPerson(6, doneYet);
 				theFrame.repaint(); }
-		}
+			}
 		
-		//theFrame.addKeyListener(keyListener);
-		theFrame.pack();
-	    theFrame.setSize(new Dimension(800, 600));
-	    theFrame.setContentPane(new Paint());
-	    theFrame.setVisible(true);
+			//theFrame.addKeyListener(keyListener);
+			theFrame.pack();
+		    theFrame.setSize(new Dimension(800, 600));
+		    theFrame.setContentPane(new Paint());
+		    theFrame.setVisible(true);
+		
 	}
     
     public static int toAscii (String s) {
@@ -146,110 +150,25 @@ public class GUI extends JPanel {
                 asciiInt = Integer.parseInt(ascString);
                 return asciiInt;
     }
+    
+    @Override
+	public void serialEvent(javax.comm.SerialPortEvent evt) {
+    	if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+            try {
+                byte singleData = (byte)input.read();
+
+                if (singleData != 10) {
+                    logText = new String(new byte[] {singleData});
+                    outPut = logText;
+                    System.out.println(logText);
+                } else {
+                    System.out.println("\n");
+                }
+            }
+            catch (Exception e) {
+                logText = "Failed to read data. (" + e.toString() + ")";
+            }
+        }
+    }
+    	
 }
-    
-    
-    
-    
-    
-    
-    
-//	KeyListener keyListener = new KeyListener() {
-//	
-//		private boolean CorrectOrNot;	
-//		private int currentBodyPart = 0;	
-//		private int winnerYet = 0;
-//		private int doneYet = 0;
-//		private int lettersInArray = 0;
-//		private boolean keepGoing = true;
-//		
-//		@Override
-//		public void keyReleased(KeyEvent e) {
-//			int key = e.getKeyCode();
-//			keepGoing = true;	
-//			//String letter = Character.toString((char) (key+32));
-//			String letter = Communicator.getOutPut();
-//			System.out.println(letter);
-//			
-//			if (key == 47)
-//				key = 9;
-//			
-//			Communicator.writeData(key);
-//			
-//			
-//			
-//			outerLoop:
-//			if (lettersInArray >= 0 ) {
-//				for (int i=0; i < (lettersInArray); i++) {
-//					if (letter.equals(usedLetters[i])) {
-//						keepGoing = false;
-//						System.out.println("Dude, you've already used that letter...step up your game.");
-//						break outerLoop;
-//					}
-//				}
-//			}
-//			
-//			if (keepGoing == true) {
-//				
-//				usedLetters[lettersInArray] = letter;
-//				lettersInArray = lettersInArray + 1;
-//				CorrectOrNot = theWord.contains(letter);
-//				
-//				if (CorrectOrNot == false) {
-//					if (currentBodyPart < 5) {
-//						currentBodyPart++;
-//						System.out.println("Incorrect");
-//					} else {
-//						currentBodyPart++;
-//						System.out.println("Wow, dude you suck.");
-//						Paint.getStatusOfPerson(6, 2);
-//						theFrame.repaint();
-//						doneYet = 2; }
-//				}
-//				else {
-//					winnerYet++;
-//					if (distinctChars == winnerYet) {
-//						System.out.println("You've won!");
-//						Paint.getStatusOfPerson(0, 1);
-//						theFrame.repaint();
-//						doneYet = 1; }
-//					else
-//						System.out.println("Correct");
-//				}
-//				
-//				if (currentBodyPart == 1) {
-//					Paint.getStatusOfPerson(1, doneYet);
-//					theFrame.repaint(); }
-//				
-//				if (currentBodyPart == 2) {
-//					Paint.getStatusOfPerson(2, doneYet);
-//					theFrame.repaint(); }
-//				
-//				if (currentBodyPart == 3) {
-//					Paint.getStatusOfPerson(3, doneYet);
-//					theFrame.repaint(); }
-//				
-//				if (currentBodyPart == 4) {
-//					Paint.getStatusOfPerson(4, doneYet);
-//					theFrame.repaint(); }
-//				
-//				if (currentBodyPart == 5) {
-//					Paint.getStatusOfPerson(5, doneYet);
-//					theFrame.repaint(); }
-//				
-//				if (currentBodyPart == 6) {
-//					Paint.getStatusOfPerson(6, doneYet);
-//					theFrame.repaint(); }
-//			}
-//		}
-//		
-//		@Override
-//		public void keyPressed(KeyEvent e) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//		@Override
-//		public void keyTyped(KeyEvent e) {
-//			// TODO Auto-generated method stub 
-//		}			
-//	};
