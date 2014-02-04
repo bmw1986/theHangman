@@ -10,15 +10,6 @@ import javax.swing.JPanel;
 import javax.comm.*;
 
 import java.io.*;
-import java.util.Enumeration;
-
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
-
-import java.io.FileDescriptor;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 @SuppressWarnings("serial")
 public class GUI extends JPanel {
@@ -26,24 +17,13 @@ public class GUI extends JPanel {
     static boolean head = false;  static boolean body = false;  static boolean leftArm = false;
     static boolean rightArm = false;  static boolean leftLeg = false;  static boolean rightLeg = false;
 	
-    static CommPortIdentifier portId;
-    static Enumeration portList;
-    SerialPort serialPort;
-    InputStream inputStream;
-    Thread readThread;
-    
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, UnsupportedCommOperationException, Exception{
 		
+    	////////////////////////////////////////////////////
     	
-    	///////////////////////////////////////////////////////////////
-    	
-    	try {
-		    listPorts();
-	            (new TwoWaySerialComm()).connect("/dev/tty.KeySerial1"); }
-        catch ( Exception e )
-            e.printStackTrace();
-        
-    	///////////////////////////////////////////////////////////////
+    	new popUpGUI().setVisible(true);
+
+    	////////////////////////////////////////////////////
     	
     	final JFrame theFrame = new JFrame();
 		
