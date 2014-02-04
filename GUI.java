@@ -1,5 +1,6 @@
 package thePackage;
 
+<<<<<<< HEAD
 import gnu.io.*;
 
 import java.awt.Color;
@@ -12,7 +13,16 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.TooManyListenersException;
+=======
+import gnu.io.SerialPortEvent;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.io.IOException;
+import java.io.InputStream;
+>>>>>>> ee46122... Added the SerialListener to the main class.
+
+import javax.comm.SerialPortEventListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -21,6 +31,7 @@ public class GUI extends JPanel implements SerialPortEventListener {
 	
     static boolean head = false;  static boolean body = false;  static boolean leftArm = false;
     static boolean rightArm = false;  static boolean leftLeg = false;  static boolean rightLeg = false;
+<<<<<<< HEAD
     private static InputStream input = null;  static String outPut = "";
     static String logText = "";  static boolean goOnnnnn = false;
     private static SerialPort serialPort = null; static String letter;
@@ -52,6 +63,12 @@ public class GUI extends JPanel implements SerialPortEventListener {
     
     public static void main(String[] args) throws IOException {
     
+=======
+    private InputStream input = null;  static String outPut = "";
+    static String logText = "";
+    public static void main(String[] args) throws IOException {
+		
+>>>>>>> ee46122... Added the SerialListener to the main class.
     	new popUpGUI().setVisible(true);
     	
     	final JFrame theFrame = new JFrame();
@@ -70,6 +87,7 @@ public class GUI extends JPanel implements SerialPortEventListener {
 		int lettersInArray = 0;
 		boolean keepGoing = true;
 		
+<<<<<<< HEAD
 	
 		SerialPortEventListener listener = new SerialPortEventListener() {
 
@@ -96,8 +114,43 @@ public class GUI extends JPanel implements SerialPortEventListener {
 		        	System.out.println("This is the value of letters: " + letter);
 		        }
 				System.out.println("This is the value: " + letter);
+=======
+		//String letter = Communicator.getOutPut();
+		String letter = logText;
+		int key = toAscii(letter);
+		
+		if (key == 109)
+			key = 9;
+		
+		Communicator.writeData(key);
+		System.out.println("This is the value of key: " + key);
+		
+		letter = Communicator.getOutPut();
+		key = toAscii(letter);
+		
+		if (key == 109)
+			key = 9;
+		
+		Communicator.writeData(key);
+		System.out.println("This is the value of key: " + key);
+		
+		keepGoing = true;	
+//			String letter = Communicator.getOutPut();
+//		String letter = System.console().readLine();
+		System.out.println(letter);
+		
+		outerLoop:
+		if (lettersInArray >= 0 ) {
+			for (int i=0; i < (lettersInArray); i++) {
+				if (letter.equals(usedLetters[i])) {
+					keepGoing = false;
+					System.out.println("Dude, you've already used that letter...step up your game.");
+					break outerLoop;
+				}
+>>>>>>> ee46122... Added the SerialListener to the main class.
 			}
 			
+<<<<<<< HEAD
 //			if (goOnnnnn == true) {
 //			try{
 //			    BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
@@ -204,13 +257,99 @@ public class GUI extends JPanel implements SerialPortEventListener {
 		if (arg0.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             goOnnnnn = true;
         	try {
+=======
+			usedLetters[lettersInArray] = letter;
+			lettersInArray = lettersInArray + 1;
+			CorrectOrNot = theWord.contains(letter);
+			
+			if (CorrectOrNot == false) {
+				if (currentBodyPart < 5) {
+					currentBodyPart++;
+					System.out.println("Incorrect");
+				} else {
+					currentBodyPart++;
+					System.out.println("Wow, dude you suck.");
+					Paint.getStatusOfPerson(6, 2);
+					theFrame.repaint();
+					doneYet = 2; }
+			}
+			else {
+				winnerYet++;
+				if (distinctChars == winnerYet) {
+					System.out.println("You've won!");
+					Paint.getStatusOfPerson(0, 1);
+					theFrame.repaint();
+					doneYet = 1; }
+				else
+					System.out.println("Correct");
+			}
+			
+			if (currentBodyPart == 1) {
+				Paint.getStatusOfPerson(1, doneYet);
+				theFrame.repaint(); }
+			
+			if (currentBodyPart == 2) {
+				Paint.getStatusOfPerson(2, doneYet);
+				theFrame.repaint(); }
+			
+			if (currentBodyPart == 3) {
+				Paint.getStatusOfPerson(3, doneYet);
+				theFrame.repaint(); }
+			
+			if (currentBodyPart == 4) {
+				Paint.getStatusOfPerson(4, doneYet);
+				theFrame.repaint(); }
+			
+			if (currentBodyPart == 5) {
+				Paint.getStatusOfPerson(5, doneYet);
+				theFrame.repaint(); }
+			
+			if (currentBodyPart == 6) {
+				Paint.getStatusOfPerson(6, doneYet);
+				theFrame.repaint(); }
+			}
+		
+			//theFrame.addKeyListener(keyListener);
+			theFrame.pack();
+		    theFrame.setSize(new Dimension(800, 600));
+		    theFrame.setContentPane(new Paint());
+		    theFrame.setVisible(true);
+		
+	}
+    
+    public static int toAscii (String s) {
+        StringBuilder sb = new StringBuilder();
+        String ascString = null;
+        
+        if (s.equals(""))
+        	s = "1";
+    
+        int asciiInt;
+                for (int i = 0; i < s.length(); i++){
+                    sb.append((int)s.charAt(i));
+                    char c = s.charAt(i);
+                }
+                ascString = sb.toString();
+                asciiInt = Integer.parseInt(ascString);
+                return asciiInt;
+    }
+    
+    @Override
+	public void serialEvent(javax.comm.SerialPortEvent evt) {
+    	if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+            try {
+>>>>>>> ee46122... Added the SerialListener to the main class.
                 byte singleData = (byte)input.read();
 
                 if (singleData != 10) {
                     logText = new String(new byte[] {singleData});
                     outPut = logText;
+<<<<<<< HEAD
                     logText = letter;
 //                    System.out.println(logText);
+=======
+                    System.out.println(logText);
+>>>>>>> ee46122... Added the SerialListener to the main class.
                 } else {
                     System.out.println("\n");
                 }
@@ -218,6 +357,7 @@ public class GUI extends JPanel implements SerialPortEventListener {
             catch (Exception e) {
                 logText = "Failed to read data. (" + e.toString() + ")";
             }
+<<<<<<< HEAD
         	
         	System.out.println("This is the value of letters: " + letter);
         }
@@ -480,4 +620,9 @@ public class GUI extends JPanel implements SerialPortEventListener {
 //		
 //		}
 //	}
+=======
+        }
+    }
+    	
+>>>>>>> ee46122... Added the SerialListener to the main class.
 }
