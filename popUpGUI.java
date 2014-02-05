@@ -12,9 +12,9 @@ import thePackage.*;
 @SuppressWarnings({ "unused", "serial" })
 public class popUpGUI extends javax.swing.JFrame {
  
-	GUI gui = null;
+//	GUI gui = null;
     Communicator communicator = null;
-    KeybindingController keybindingController = null;
+    static KeybindingController keybindingController = null;
 
     /** Creates new form GUI */
     public popUpGUI() {
@@ -27,7 +27,7 @@ public class popUpGUI extends javax.swing.JFrame {
 
     private void createObjects()
     {
-        gui = new GUI();
+        //gui = new GUI();
         keybindingController = new KeybindingController(this);
     }
 
@@ -300,17 +300,17 @@ public class popUpGUI extends javax.swing.JFrame {
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
     	communicator.connect();
-        if (gui.getConnected() == true)
+        if (communicator.getConnected() == true)
         {
-            if (gui.initIOStream() == true)
+            if (communicator.initIOStream() == true)
             {
-            	gui.initListener();
+            	communicator.initListener();
             }
         }
     }//GEN-LAST:event_btnConnectActionPerformed
 
     private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
-    	gui.disconnect();
+    	communicator.disconnect();
     }//GEN-LAST:event_btnDisconnectActionPerformed
     
 //    public static void main(String args[]) {
@@ -333,7 +333,7 @@ public class popUpGUI extends javax.swing.JFrame {
     public javax.swing.JButton btnRightAccel;
     public javax.swing.JButton btnRightDecel;
     @SuppressWarnings("rawtypes")
-	public javax.swing.JComboBox cboxPorts;
+	public static javax.swing.JComboBox cboxPorts;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -352,7 +352,7 @@ public class popUpGUI extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     public javax.swing.JLabel lblLeft;
     public javax.swing.JLabel lblRight;
-    public javax.swing.JTextArea txtLog;
+    public static javax.swing.JTextArea txtLog;
     // End of variables declaration//GEN-END:variables
 
     

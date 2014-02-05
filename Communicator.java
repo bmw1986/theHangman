@@ -18,14 +18,14 @@ public class Communicator implements SerialPortEventListener
 
     //for containing the ports that will be found
     @SuppressWarnings("rawtypes")
-	private Enumeration ports = null;
+	private static Enumeration ports = null;
     //map the port names to CommPortIdentifiers
     @SuppressWarnings("rawtypes")
-	private HashMap portMap = new HashMap();
+	private static HashMap portMap = new HashMap();
 
     //this is the object that contains the opened port
-    private CommPortIdentifier selectedPortIdentifier = null;
-    private SerialPort serialPort = null;
+    private static CommPortIdentifier selectedPortIdentifier = null;
+    private static SerialPort serialPort = null;
 
     //input and output streams for sending and receiving data
     private InputStream input = null;
@@ -35,6 +35,7 @@ public class Communicator implements SerialPortEventListener
     //and disabling buttons depending on whether the program
     //is connected to a serial port or not
     private boolean bConnected = false;
+	//private popUpGUI popUpGUI;
 
     //the timeout value for connecting with the port
     final static int TIMEOUT = 2000;
@@ -50,16 +51,16 @@ public class Communicator implements SerialPortEventListener
     static String outPut = "";
     
 
-    public Communicator(popUpGUI window)
+    public Communicator(popUpGUI popUpGUI)
     {
-        this.window = window;
+        this.window = popUpGUI;
     }
 
     //search for all the serial ports
     //pre: none
     //post: adds all the found ports to a combo box on the GUI
     @SuppressWarnings("unchecked")
-	public void searchForPorts()
+	public static void searchForPorts()
     {
         ports = CommPortIdentifier.getPortIdentifiers();
 
@@ -70,7 +71,7 @@ public class Communicator implements SerialPortEventListener
             //get only serial ports
             if (curPort.getPortType() == CommPortIdentifier.PORT_SERIAL)
             {
-                window.cboxPorts.addItem(curPort.getName());
+            	popUpGUI.cboxPorts.addItem(curPort.getName());
                 portMap.put(curPort.getName(), curPort);
             }
         }
@@ -82,7 +83,7 @@ public class Communicator implements SerialPortEventListener
     //an exception is generated
     public void connect()
     {
-        String selectedPort = (String)window.cboxPorts.getSelectedItem();
+        String selectedPort = (String)popUpGUI.cboxPorts.getSelectedItem();
         selectedPortIdentifier = (CommPortIdentifier)portMap.get(selectedPort);
 
         CommPort commPort = null;
@@ -99,33 +100,33 @@ public class Communicator implements SerialPortEventListener
 
             //logging
             logText = selectedPort + " opened successfully.";
-            window.txtLog.setForeground(Color.black);
-            window.txtLog.append(logText + "\n");
+            popUpGUI.txtLog.setForeground(Color.black);
+            popUpGUI.txtLog.append(logText + "\n");
 
             //CODE ON SETTING BAUD RATE ETC OMITTED
             //XBEE PAIR ASSUMED TO HAVE SAME SETTINGS ALREADY
             setSerialPortParameters();
             
             //enables the controls on the GUI if a successful connection is made
-            window.keybindingController.toggleControls();
+            popUpGUI.keybindingController.toggleControls();
         }
         catch (PortInUseException e)
         {
             logText = selectedPort + " is in use. (" + e.toString() + ")";
             
-            window.txtLog.setForeground(Color.RED);
-            window.txtLog.append(logText + "\n");
+            popUpGUI.txtLog.setForeground(Color.RED);
+            popUpGUI.txtLog.append(logText + "\n");
         }
         catch (Exception e)
         {
             logText = "Failed to open " + selectedPort + "(" + e.toString() + ")";
-            window.txtLog.append(logText + "\n");
-            window.txtLog.setForeground(Color.RED);
+            popUpGUI.txtLog.append(logText + "\n");
+            popUpGUI.txtLog.setForeground(Color.RED);
         }
     }
 
     // Sets the Serial Port Parameters such as BAUD Rate, DataBites, Stopbits...
-    private void setSerialPortParameters() throws IOException {
+    private static void setSerialPortParameters() throws IOException {
         int baudRate = 9600;
  
         try {
@@ -161,8 +162,8 @@ public class Communicator implements SerialPortEventListener
         }
         catch (IOException e) {
             logText = "I/O Streams failed to open. (" + e.toString() + ")";
-            window.txtLog.setForeground(Color.red);
-            window.txtLog.append(logText + "\n");
+            popUpGUI.txtLog.setForeground(Color.red);
+            popUpGUI.txtLog.append(logText + "\n");
             return successful;
         }
     }
@@ -180,8 +181,8 @@ public class Communicator implements SerialPortEventListener
         catch (TooManyListenersException e)
         {
             logText = "Too many listeners. (" + e.toString() + ")";
-            window.txtLog.setForeground(Color.red);
-            window.txtLog.append(logText + "\n");
+            popUpGUI.txtLog.setForeground(Color.red);
+            popUpGUI.txtLog.append(logText + "\n");
         }
     }
 
@@ -200,17 +201,17 @@ public class Communicator implements SerialPortEventListener
             input.close();
             output.close();
             setConnected(false);
-            window.keybindingController.toggleControls();
+            popUpGUI.keybindingController.toggleControls();
 
             logText = "Disconnected.";
-            window.txtLog.setForeground(Color.red);
-            window.txtLog.append(logText + "\n");
+            popUpGUI.txtLog.setForeground(Color.red);
+            popUpGUI.txtLog.append(logText + "\n");
         }
         catch (Exception e)
         {
             logText = "Failed to close " + serialPort.getName() + "(" + e.toString() + ")";
-            window.txtLog.setForeground(Color.red);
-            window.txtLog.append(logText + "\n");
+            popUpGUI.txtLog.setForeground(Color.red);
+            popUpGUI.txtLog.append(logText + "\n");
         }
     }
 
@@ -234,18 +235,18 @@ public class Communicator implements SerialPortEventListener
 
                 if (singleData != NEW_LINE_ASCII) {
                     logText = new String(new byte[] {singleData});
-                    window.txtLog.append(logText);
+                    popUpGUI.txtLog.append(logText);
                     outPut = logText;
                     System.out.println(logText);
                 } else {
-                    window.txtLog.append("\n");
+                    popUpGUI.txtLog.append("\n");
                     System.out.println("\n");
                 }
             }
             catch (Exception e) {
                 logText = "Failed to read data. (" + e.toString() + ")";
-                window.txtLog.setForeground(Color.red);
-                window.txtLog.append(logText + "\n");
+                popUpGUI.txtLog.setForeground(Color.red);
+                popUpGUI.txtLog.append(logText + "\n");
             }
         }
     }
@@ -259,8 +260,8 @@ public class Communicator implements SerialPortEventListener
             output.flush();
         } catch (Exception e) {
             logText = "Failed to write data. (" + e.toString() + ")";
-            //window.txtLog.setForeground(Color.red);
-            //window.txtLog.append(logText + "\n");
+            //popUpGUI.txtLog.setForeground(Color.red);
+            //popUpGUI.txtLog.append(logText + "\n");
         }
     }
     public static String getOutPut() {

@@ -62,7 +62,7 @@ public class KeybindingController {
 
     public void toggleControls()
     {
-        if (window.gui.getConnected() == true) {
+        if (window.communicator.getConnected() == true) {
             window.btnLeftAccel.setEnabled(true);
             window.btnLeftDecel.setEnabled(true);
             window.btnRightAccel.setEnabled(true);
