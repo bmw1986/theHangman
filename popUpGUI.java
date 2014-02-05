@@ -11,9 +11,9 @@ import thePackage.*;
 
 @SuppressWarnings({ "unused", "serial" })
 public class popUpGUI extends javax.swing.JFrame {
-    //Communicator object
+ 
+	GUI gui = null;
     Communicator communicator = null;
-    //KeybindingController object
     KeybindingController keybindingController = null;
 
     /** Creates new form GUI */
@@ -27,7 +27,7 @@ public class popUpGUI extends javax.swing.JFrame {
 
     private void createObjects()
     {
-        communicator = new Communicator(this);
+        gui = new GUI();
         keybindingController = new KeybindingController(this);
     }
 
@@ -299,18 +299,18 @@ public class popUpGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRightDecelActionPerformed
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
-        communicator.connect();
-        if (communicator.getConnected() == true)
+    	communicator.connect();
+        if (gui.getConnected() == true)
         {
-            if (communicator.initIOStream() == true)
+            if (gui.initIOStream() == true)
             {
-                communicator.initListener();
+            	gui.initListener();
             }
         }
     }//GEN-LAST:event_btnConnectActionPerformed
 
     private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
-        communicator.disconnect();
+    	gui.disconnect();
     }//GEN-LAST:event_btnDisconnectActionPerformed
     
 //    public static void main(String args[]) {

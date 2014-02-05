@@ -9,6 +9,7 @@ import javax.swing.KeyStroke;
 
 public class KeybindingController {
 	popUpGUI window = null;
+	GUI gui = null;
 
     private int leftThrottle = 0;
     private int rightThrottle = 0;
@@ -61,7 +62,7 @@ public class KeybindingController {
 
     public void toggleControls()
     {
-        if (window.communicator.getConnected() == true) {
+        if (window.gui.getConnected() == true) {
             window.btnLeftAccel.setEnabled(true);
             window.btnLeftDecel.setEnabled(true);
             window.btnRightAccel.setEnabled(true);

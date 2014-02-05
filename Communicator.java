@@ -264,6 +264,6 @@ public class Communicator implements SerialPortEventListener
         }
     }
     public static String getOutPut() {
-    	return outPut;
+    	return logText;
     }
 }
