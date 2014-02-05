@@ -31,7 +31,6 @@ public class popUpGUI extends javax.swing.JFrame {
         keybindingController = new KeybindingController(this);
     }
     
-    @SuppressWarnings("rawtypes")
 	private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -325,7 +324,6 @@ public class popUpGUI extends javax.swing.JFrame {
     public javax.swing.JButton btnLeftDecel;
     public javax.swing.JButton btnRightAccel;
     public javax.swing.JButton btnRightDecel;
-    @SuppressWarnings("rawtypes")
 	public javax.swing.JComboBox cboxPorts;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

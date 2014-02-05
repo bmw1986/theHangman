@@ -14,162 +14,53 @@ import java.util.TooManyListenersException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import sun.security.util.Length;
+
 @SuppressWarnings("serial")
 public class GUI extends JPanel implements SerialPortEventListener {
 	
+	
+	///////////////////////////       Variables       //////////////////////////////
     static boolean head = false;  static boolean body = false;  static boolean leftArm = false;
     static boolean rightArm = false;  static boolean leftLeg = false;  static boolean rightLeg = false;
     private static InputStream input = null;  static String outPut = "";
-    static String logText = "";
-		    
-	/////////////////////////////////////////////////////////////////
-    popUpGUI window = null;
-	
-	//for containing the ports that will be found
-	@SuppressWarnings("rawtypes")
-	private Enumeration ports = null;
-	//map the port names to CommPortIdentifiers
-	@SuppressWarnings("rawtypes")
-	private HashMap portMap = new HashMap();
-	
-	//this is the object that contains the opened port
-	private CommPortIdentifier selectedPortIdentifier = null;
-	private static SerialPort serialPort = null;
-	
-	private static OutputStream output = null;
-	
-	//just a boolean flag that i use for enabling
-	//and disabling buttons depending on whether the program
-	//is connected to a serial port or not
-	private boolean bConnected = false;
-	
-	//the timeout value for connecting with the port
-	final static int TIMEOUT = 2000;
-	
-	//some ascii values for for certain things
-	final static int SPACE_ASCII = 32;
-	final static int DASH_ASCII = 45;
-	final static int NEW_LINE_ASCII = 10;
-	
-	/////////////////////////////////////////////////////////////////
-
-
-	public GUI(popUpGUI window) {
-		this.window = window;
-	}
+    static String logText = "";  popUpGUI window = null; @SuppressWarnings("rawtypes")
+	private Enumeration ports = null; @SuppressWarnings("rawtypes")	private HashMap portMap = new HashMap();
+	private CommPortIdentifier selectedPortIdentifier = null; private static SerialPort serialPort = null;
+	private static OutputStream output = null; private boolean bConnected = false;
+	final static int TIMEOUT = 2000; final static int SPACE_ASCII = 32;
+	final static int DASH_ASCII = 45; final static int NEW_LINE_ASCII = 10; static JFrame theFrame;
+	static String theWord = null; static int distinctChars; static String[] usedLetters = new String[20];
+	static boolean CorrectOrNot; static int currentBodyPart = 0; static int winnerYet = 0;
+	static int doneYet = 0; static int lettersInArray = 0; 	static boolean keepGoing = true;
+	static String letter = null; static char theChar; static int ascii = 0;
+	///////////////////////////////////////////////////////////////////////////////
 
 	public static void main(String[] args) throws IOException {
 		
     	new popUpGUI().setVisible(true);
-    	
-    	final JFrame theFrame = new JFrame();
-		
-		final String theWord = ReadFromFile.findWord();
-	   	final int distinctChars = GameLogic.determineIndivisualChars(theWord);
-	   	final String[] usedLetters = new String[20];
+    	theFrame = new JFrame();
+	   	
+		theWord = ReadFromFile.findWord();
+		distinctChars = GameLogic.determineIndivisualChars(theWord);
 	   	
 	   	System.out.println(theWord);
 		System.out.println(distinctChars);
-		
-		boolean CorrectOrNot;	
-		int currentBodyPart = 0;	
-		int winnerYet = 0;
-		int doneYet = 0;
-		int lettersInArray = 0;
-		boolean keepGoing = true;
-		
-		//String letter = Communicator.getOutPut();
-		String letter = logText;
-		int key = toAscii(letter);
-		
-		if (key == 109)
-			key = 9;
-		
-		writeData(key);
-		System.out.println("This is the value of key: " + key);
-		
-		letter = getOutPut();
-		key = toAscii(letter);
-		
-		if (key == 109)
-			key = 9;
-		
-		writeData(key);
-		System.out.println("This is the value of key: " + key);
-		
-		
-		outerLoop:
-		if (lettersInArray >= 0 ) {
-			for (int i=0; i < (lettersInArray); i++) {
-				if (letter.equals(usedLetters[i])) {
-					keepGoing = false;
-					System.out.println("Dude, you've already used that letter...step up your game.");
-					break outerLoop;
-				}
-			}
-		}
-		
-		if (keepGoing == true) {
-			
-			usedLetters[lettersInArray] = letter;
-			lettersInArray = lettersInArray + 1;
-			CorrectOrNot = theWord.contains(letter);
-			
-			if (CorrectOrNot == false) {
-				if (currentBodyPart < 5) {
-					currentBodyPart++;
-					System.out.println("Incorrect");
-				} else {
-					currentBodyPart++;
-					System.out.println("Wow, dude you suck.");
-					Paint.getStatusOfPerson(6, 2);
-					theFrame.repaint();
-					doneYet = 2; }
-			}
-			else {
-				winnerYet++;
-				if (distinctChars == winnerYet) {
-					System.out.println("You've won!");
-					Paint.getStatusOfPerson(0, 1);
-					theFrame.repaint();
-					doneYet = 1; }
-				else
-					System.out.println("Correct");
-			}
-			
-			if (currentBodyPart == 1) {
-				Paint.getStatusOfPerson(1, doneYet);
-				theFrame.repaint(); }
-			
-			if (currentBodyPart == 2) {
-				Paint.getStatusOfPerson(2, doneYet);
-				theFrame.repaint(); }
-			
-			if (currentBodyPart == 3) {
-				Paint.getStatusOfPerson(3, doneYet);
-				theFrame.repaint(); }
-			
-			if (currentBodyPart == 4) {
-				Paint.getStatusOfPerson(4, doneYet);
-				theFrame.repaint(); }
-			
-			if (currentBodyPart == 5) {
-				Paint.getStatusOfPerson(5, doneYet);
-				theFrame.repaint(); }
-			
-			if (currentBodyPart == 6) {
-				Paint.getStatusOfPerson(6, doneYet);
-				theFrame.repaint(); }
-			}
-		
-			//theFrame.addKeyListener(keyListener);
-			theFrame.pack();
-		    theFrame.setSize(new Dimension(800, 600));
-		    theFrame.setContentPane(new Paint());
-		    theFrame.setVisible(true);
-		
+    	
+		theFrame.pack();
+	    theFrame.setSize(new Dimension(800, 600));
+	    theFrame.setContentPane(new Paint());
+	    theFrame.setVisible(true);
 	}
     
+	///////////////////////////////////////////////////////////////////////////////
+	
+	public GUI(popUpGUI window) {
+		this.window = window;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////
+	
     public static int toAscii (String s) {
         StringBuilder sb = new StringBuilder();
         String ascString = null;
@@ -187,33 +78,8 @@ public class GUI extends JPanel implements SerialPortEventListener {
                 return asciiInt;
     }
     
-//    public void initListener()
-//    {
-//        try {
-//            Communicator.getSerialPort().addEventListener(this);
-//            Communicator.getSerialPort().notifyOnDataAvailable(true);
-//        } catch (TooManyListenersException e) {
-//            logText = "Too many listeners. (" + e.toString() + ")";
-//        }
-//    }
-//
-//	@Override
-//	public void run() {
-//		System.out.println("Hello from a thread!");
-//	}
-//
-//	@Override
-//	public void serialEvent(SerialPortEvent evt) {
-//		if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-//            
-//			System.out.println("WWOOOOOAAAAHHHHHYYYEEEEAAAAHHHHH"); }
-//	}
-	
-	///////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 
-    //search for all the serial ports
-    //pre: none
-    //post: adds all the found ports to a combo box on the GUI
     @SuppressWarnings("unchecked")
 	public void searchForPorts()
     {
@@ -232,10 +98,8 @@ public class GUI extends JPanel implements SerialPortEventListener {
         }
     }
 
-    //connect to the selected port in the combo box
-    //pre: ports are already found by using the searchForPorts method
-    //post: the connected comm port is stored in commPort, otherwise,
-    //an exception is generated
+	///////////////////////////////////////////////////////////////////////////////
+
     public void connect()
     {
         String selectedPort = (String)window.cboxPorts.getSelectedItem();
@@ -279,8 +143,9 @@ public class GUI extends JPanel implements SerialPortEventListener {
             window.txtLog.setForeground(Color.RED);
         }
     }
+    
+	///////////////////////////////////////////////////////////////////////////////
 
-    // Sets the Serial Port Parameters such as BAUD Rate, DataBites, Stopbits...
     private void setSerialPortParameters() throws IOException {
         int baudRate = 9600;
  
@@ -298,12 +163,11 @@ public class GUI extends JPanel implements SerialPortEventListener {
         }
     }
     
-    //open the input and output streams
-    //pre: an open port
-    //post: initialized intput and output streams for use to communicate data
+	///////////////////////////////////////////////////////////////////////////////
+
     public boolean initIOStream()
     {
-        //return value for whather opening the streams is successful or not
+        //return value for whether opening the streams is successful or not
         boolean successful = false;
 
         try {
@@ -323,9 +187,8 @@ public class GUI extends JPanel implements SerialPortEventListener {
         }
     }
 
-    //starts the event listener that knows whenever data is available to be read
-    //pre: an open serial port
-    //post: an event listener for the serial port that knows when data is received
+	///////////////////////////////////////////////////////////////////////////////
+
     public void initListener()
     {
         try
@@ -341,9 +204,8 @@ public class GUI extends JPanel implements SerialPortEventListener {
         }
     }
 
-    //disconnect the serial port
-    //pre: an open serial port
-    //post: closed serial port
+	///////////////////////////////////////////////////////////////////////////////
+
     public void disconnect()
     {
         //close the serial port
@@ -369,23 +231,26 @@ public class GUI extends JPanel implements SerialPortEventListener {
             window.txtLog.append(logText + "\n");
         }
     }
+    
+	///////////////////////////////////////////////////////////////////////////////
 
     final public boolean getConnected()
     {
         return bConnected;
     }
+    
+	///////////////////////////////////////////////////////////////////////////////
 
     public void setConnected(boolean bConnected)
     {
         this.bConnected = bConnected;
     }
 
-    //what happens when data is received
-    //pre: serial event is triggered
-    //post: processing on the data it reads
+	///////////////////////////////////////////////////////////////////////////////
+
     public void serialEvent(SerialPortEvent evt) {
-        if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-        	System.out.println("FUCK THIS");
+       
+    	if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
         	try {
                 byte singleData = (byte)input.read();
 
@@ -393,23 +258,134 @@ public class GUI extends JPanel implements SerialPortEventListener {
                     logText = new String(new byte[] {singleData});
                     window.txtLog.append(logText);
                     outPut = logText;
-                    System.out.println(logText);
+                	letter = logText;
+            		int key = toAscii(letter);
+            		
+            		if (key == 109)
+            			key = 9;
+            		
+            		writeData(key);
+            		System.out.println("This is the value of key: " + key);
+            		
+            		
+            		outerLoop:
+            		if (lettersInArray >= 0 ) {
+            			for (int i=0; i < (lettersInArray); i++) {
+            				if (letter.equals(usedLetters[i])) {
+            					keepGoing = false;
+            					System.out.println("Dude, you've already used that letter...step up your game.");
+            					break outerLoop;
+            				}
+            			}
+            		}
+            		
+            		if (keepGoing == true) {
+            			
+            			usedLetters[lettersInArray] = letter;
+            			lettersInArray = lettersInArray + 1;
+            			CorrectOrNot = theWord.contains(letter);
+            			
+            			if (CorrectOrNot == false) {
+            				if (currentBodyPart < 5) {
+            					currentBodyPart++;
+            					System.out.println("Incorrect");
+            				} else {
+            					currentBodyPart++;
+            					System.out.println("Wow, dude you suck.");
+            					Paint.getStatusOfPerson(6, 2);
+            					theFrame.repaint();
+            					doneYet = 2; }
+            			}
+            			else {
+            				winnerYet++;
+            				if (distinctChars == winnerYet) {
+            					System.out.println("You've won!");
+            					Paint.getStatusOfPerson(0, 1);
+            					theFrame.repaint();
+            					doneYet = 1; }
+            				else
+            					System.out.println("Correct");
+            			}
+            			
+            			if (currentBodyPart == 1) {
+            				Paint.getStatusOfPerson(1, doneYet);
+            				theFrame.repaint(); }
+            			
+            			if (currentBodyPart == 2) {
+            				Paint.getStatusOfPerson(2, doneYet);
+            				theFrame.repaint(); }
+            			
+            			if (currentBodyPart == 3) {
+            				Paint.getStatusOfPerson(3, doneYet);
+            				theFrame.repaint(); }
+            			
+            			if (currentBodyPart == 4) {
+            				Paint.getStatusOfPerson(4, doneYet);
+            				theFrame.repaint(); }
+            			
+            			if (currentBodyPart == 5) {
+            				Paint.getStatusOfPerson(5, doneYet);
+            				theFrame.repaint(); }
+            			
+            			if (currentBodyPart == 6) {
+            				Paint.getStatusOfPerson(6, doneYet);
+            				theFrame.repaint(); }
+            			}
                 } else {
                     window.txtLog.append("\n");
                     System.out.println("\n");
                 }
             }
+        
             catch (Exception e) {
                 logText = "Failed to read data. (" + e.toString() + ")";
                 window.txtLog.setForeground(Color.red);
                 window.txtLog.append(logText + "\n");
             }
+        	
+        	writeData(9);
+        	
+//        	for (int i=0; i < lettersInArray; i++) {
+//        		if (usedLetter[i])
+//        			
+//        	}
+        	
+        	theChar = theWord.charAt(0); ascii = (int) theChar;
+        	writeData(ascii);
+        	theChar = theWord.charAt(1); ascii = (int) theChar;
+        	writeData(ascii);
+        	theChar = theWord.charAt(2); ascii = (int) theChar;
+        	writeData(ascii);
+        	theChar = theWord.charAt(3); ascii = (int) theChar;
+        	writeData(ascii);
+        	theChar = theWord.charAt(4); ascii = (int) theChar;
+        	writeData(ascii);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	writeData(20);
+        	
         }
     }
 
-    //method that can be called to send data
-    //pre: open serial port
-    //post: data sent to the other device
+	///////////////////////////////////////////////////////////////////////////////
+
     public static void writeData(int asciiToWrite) {
         try {
 			output.write(asciiToWrite);
@@ -418,15 +394,24 @@ public class GUI extends JPanel implements SerialPortEventListener {
             logText = "Failed to write data. (" + e.toString() + ")";
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+
     public static String getOutPut() {
     	return outPut;
     }
+
+	///////////////////////////////////////////////////////////////////////////////
 
 	public static SerialPort getSerialPort() {
 		return serialPort;
 	}
 
+	///////////////////////////////////////////////////////////////////////////////
+
 	public static void setSerialPort(SerialPort serialPort) {
 		GUI.serialPort = serialPort;
 	}
+	///////////////////////////////////////////////////////////////////////////////
+
 }

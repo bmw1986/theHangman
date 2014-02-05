@@ -146,7 +146,6 @@ public class KeybindingController {
         }
     };
 
-    @SuppressWarnings("static-access")
 	public void updateLabels()
     {
         window.lblLeft.setText(String.valueOf(leftThrottle));
