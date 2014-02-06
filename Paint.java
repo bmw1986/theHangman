@@ -19,7 +19,15 @@ public class Paint extends JPanel {
     public static void getStatusOfPerson (int bodyPart, int doneYet) {
     	
 	
-    	if (bodyPart == 1)
+    	if (bodyPart == 0) {
+    		head = false;
+    		body = false;
+    		leftArm = false;
+    		rightArm = false;
+    		leftLeg = false;
+    		rightLeg = false; 
+    	}
+    	else if (bodyPart == 1)
     		head = true;
     	else if (bodyPart == 2)
     		body = true;
@@ -32,7 +40,11 @@ public class Paint extends JPanel {
     	else if (bodyPart == 6)
     		rightLeg = true; 
 	
-    	if (doneYet == 1)
+    	if (doneYet == 0) {
+    		win = false;
+    		lose = false;
+    	}
+    	else if (doneYet == 1)
     		win = true;
     	else if (doneYet == 2)
     		lose = true;

@@ -1,7 +1,12 @@
 package thePackage;
 
+import java.io.IOException;
+
 public class GameLogic {
 
+	static String theWord; static char[] charOfTheDay; static char[]guesses;
+	static int keepPlaying = 0; static int distinctChars;
+	
 	static boolean isItCorrect(int input, String theWord) {
 
 		 String letter = Character.toString((char) input);
@@ -32,4 +37,31 @@ public class GameLogic {
 		
 		return (length-repeats);
 	}
+	
+	static boolean keepPlaying () throws IOException {
+		
+		boolean yesOrNo = true;
+		
+		if (keepPlaying < 10) {
+    		theWord = ReadFromFile.findWord();
+			keepPlaying++;
+			yesOrNo = true;
+		} else
+			yesOrNo = false;
+		
+		return yesOrNo;
+	}
+	
+	static int getDistinctChars() {
+		return distinctChars; }
+	
+	static String getTheWord() {
+		return theWord; }
+	
+	static char[] getCharOfTheDay() {
+		return charOfTheDay;}
+		
+	static char[] getGuesses() {
+		return guesses; }
+	
 }

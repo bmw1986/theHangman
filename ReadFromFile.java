@@ -15,7 +15,6 @@ public class ReadFromFile {
 			int index = 0;
 			String l;
 			while ((l = in.readLine()) != null) {
-				//System.out.println(l);
 				theWords[index] = l;
 				index++;
 			}			
@@ -23,9 +22,10 @@ public class ReadFromFile {
 			if (in != null) 
 				in.close();
 		}
-		
+
 		int randomNum = 0 + (int)(Math.random()*10);
 		String theWord = theWords[randomNum];	
+		
 		return theWord;
 	}
 }

@@ -14,8 +14,6 @@ import java.util.TooManyListenersException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import sun.security.util.Length;
-
 @SuppressWarnings("serial")
 public class GUI extends JPanel implements SerialPortEventListener {
 	
@@ -33,19 +31,17 @@ public class GUI extends JPanel implements SerialPortEventListener {
 	static String theWord = null; static int distinctChars; static String[] usedLetters = new String[20];
 	static boolean CorrectOrNot; static int currentBodyPart = 0; static int winnerYet = 0;
 	static int doneYet = 0; static int lettersInArray = 0; 	static boolean keepGoing = true;
-	static String letter = null; static char theChar; static int ascii = 0;
+	static String letter = null; static char theChar; static int ascii = 0; static char[] charOfTheDay;
+	static char[] guesses; static int keepPlaying = 0; static boolean yesOrNo = true;
+	static boolean enterHere = true;
 	///////////////////////////////////////////////////////////////////////////////
 
 	public static void main(String[] args) throws IOException {
 		
     	new popUpGUI().setVisible(true);
     	theFrame = new JFrame();
-	   	
-		theWord = ReadFromFile.findWord();
-		distinctChars = GameLogic.determineIndivisualChars(theWord);
-	   	
-	   	System.out.println(theWord);
-		System.out.println(distinctChars);
+	  
+    	yesOrNo = GameLogic.keepPlaying();
     	
 		theFrame.pack();
 	    theFrame.setSize(new Dimension(800, 600));
@@ -142,6 +138,7 @@ public class GUI extends JPanel implements SerialPortEventListener {
             window.txtLog.append(logText + "\n");
             window.txtLog.setForeground(Color.RED);
         }
+		
     }
     
 	///////////////////////////////////////////////////////////////////////////////
@@ -250,6 +247,37 @@ public class GUI extends JPanel implements SerialPortEventListener {
 
     public void serialEvent(SerialPortEvent evt) {
        
+    	
+    	if (enterHere == true) {
+    		try {
+				yesOrNo = GameLogic.keepPlaying();
+				if (yesOrNo == false) System.out.println("GAME OVER DUDE....GO HOME");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    		theWord = GameLogic.getTheWord();
+
+    		charOfTheDay = theWord.toCharArray();
+			guesses = theWord.toCharArray();
+			for (int i=0; i< theWord.length(); i++)
+				guesses[i] = '_';
+	    	
+	    	System.out.println("");
+	    	currentBodyPart = 0;
+	    	doneYet = 0;
+	    	winnerYet = 0;
+			distinctChars = GameLogic.determineIndivisualChars(theWord);
+			for (int i=0; i < lettersInArray; i++)
+				usedLetters[i] = "";
+		   	System.out.println(theWord);
+			System.out.println(distinctChars);
+			
+			Paint.getStatusOfPerson(0, doneYet);
+			theFrame.repaint();
+			
+			enterHere = false;
+    	}
+    	
     	if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
         	try {
                 byte singleData = (byte)input.read();
@@ -259,130 +287,116 @@ public class GUI extends JPanel implements SerialPortEventListener {
                     window.txtLog.append(logText);
                     outPut = logText;
                 	letter = logText;
-            		int key = toAscii(letter);
-            		
-            		if (key == 109)
-            			key = 9;
-            		
-            		writeData(key);
-            		System.out.println("This is the value of key: " + key);
-            		
-            		
-            		outerLoop:
-            		if (lettersInArray >= 0 ) {
-            			for (int i=0; i < (lettersInArray); i++) {
-            				if (letter.equals(usedLetters[i])) {
-            					keepGoing = false;
-            					System.out.println("Dude, you've already used that letter...step up your game.");
-            					break outerLoop;
-            				}
-            			}
-            		}
-            		
-            		if (keepGoing == true) {
-            			
-            			usedLetters[lettersInArray] = letter;
-            			lettersInArray = lettersInArray + 1;
-            			CorrectOrNot = theWord.contains(letter);
-            			
-            			if (CorrectOrNot == false) {
-            				if (currentBodyPart < 5) {
-            					currentBodyPart++;
-            					System.out.println("Incorrect");
-            				} else {
-            					currentBodyPart++;
-            					System.out.println("Wow, dude you suck.");
-            					Paint.getStatusOfPerson(6, 2);
-            					theFrame.repaint();
-            					doneYet = 2; }
-            			}
-            			else {
-            				winnerYet++;
-            				if (distinctChars == winnerYet) {
-            					System.out.println("You've won!");
-            					Paint.getStatusOfPerson(0, 1);
-            					theFrame.repaint();
-            					doneYet = 1; }
-            				else
-            					System.out.println("Correct");
-            			}
-            			
-            			if (currentBodyPart == 1) {
-            				Paint.getStatusOfPerson(1, doneYet);
-            				theFrame.repaint(); }
-            			
-            			if (currentBodyPart == 2) {
-            				Paint.getStatusOfPerson(2, doneYet);
-            				theFrame.repaint(); }
-            			
-            			if (currentBodyPart == 3) {
-            				Paint.getStatusOfPerson(3, doneYet);
-            				theFrame.repaint(); }
-            			
-            			if (currentBodyPart == 4) {
-            				Paint.getStatusOfPerson(4, doneYet);
-            				theFrame.repaint(); }
-            			
-            			if (currentBodyPart == 5) {
-            				Paint.getStatusOfPerson(5, doneYet);
-            				theFrame.repaint(); }
-            			
-            			if (currentBodyPart == 6) {
-            				Paint.getStatusOfPerson(6, doneYet);
-            				theFrame.repaint(); }
-            			}
-                } else {
-                    window.txtLog.append("\n");
-                    System.out.println("\n");
-                }
-            }
-        
-            catch (Exception e) {
-                logText = "Failed to read data. (" + e.toString() + ")";
-                window.txtLog.setForeground(Color.red);
-                window.txtLog.append(logText + "\n");
-            }
-        	
-        	writeData(9);
-        	
-//        	for (int i=0; i < lettersInArray; i++) {
-//        		if (usedLetter[i])
-//        			
-//        	}
-        	
-        	theChar = theWord.charAt(0); ascii = (int) theChar;
-        	writeData(ascii);
-        	theChar = theWord.charAt(1); ascii = (int) theChar;
-        	writeData(ascii);
-        	theChar = theWord.charAt(2); ascii = (int) theChar;
-        	writeData(ascii);
-        	theChar = theWord.charAt(3); ascii = (int) theChar;
-        	writeData(ascii);
-        	theChar = theWord.charAt(4); ascii = (int) theChar;
-        	writeData(ascii);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	writeData(20);
-        	
-        }
-    }
+                		
+	                	int key = toAscii(letter);
+	            		
+	            		if (key == 109)
+	            			key = 9;
+	            		
+	            		writeData(key);
+	            		System.out.println("This is the value of letter: " + letter);
+	            		
+	            		outerLoop:
+	            		if (lettersInArray >= 0 ) {
+	            			for (int i=0; i < (lettersInArray); i++) {
+	            				if (letter.equals(usedLetters[i])) {
+	            					keepGoing = false;
+	            					System.out.println("Dude, you've already used that letter...step up your game.");
+	            					break outerLoop;
+	            				}
+	            			}
+	            		}
+	            		
+	            		if (keepGoing == true) {
+	            			
+	            			usedLetters[lettersInArray] = letter;
+	            			lettersInArray = lettersInArray + 1;
+	            			CorrectOrNot = theWord.contains(letter);
+	            			
+	            			if (CorrectOrNot == false) {
+	            				if (currentBodyPart < 5) {
+	            					currentBodyPart++;
+	            					System.out.println("Incorrect");
+	            				} else {
+	            					currentBodyPart++;
+	            					System.out.println("Wow, dude you suck.");
+	            					Paint.getStatusOfPerson(6, 2);
+	            					theFrame.repaint();
+	            					doneYet = 2; 
+	            					enterHere = true; }
+	            			} else {
+	            				
+	            				winnerYet++;
+	            				if (distinctChars == winnerYet) {
+	            					System.out.println("You've won!");
+	            					Paint.getStatusOfPerson(0, 1);
+	            					theFrame.repaint();
+	            					doneYet = 1; 
+	            					enterHere = true; }
+	            				else
+	            					System.out.println("Correct");
+	            			}
+	   
+	            			if (currentBodyPart == 1) {
+	            				Paint.getStatusOfPerson(1, doneYet);
+	            				theFrame.repaint(); }
+	            			
+	            			if (currentBodyPart == 2) {
+	            				Paint.getStatusOfPerson(2, doneYet);
+	            				theFrame.repaint(); }
+	            			
+	            			if (currentBodyPart == 3) {
+	            				Paint.getStatusOfPerson(3, doneYet);
+	            				theFrame.repaint(); }
+	            			
+	            			if (currentBodyPart == 4) {
+	            				Paint.getStatusOfPerson(4, doneYet);
+	            				theFrame.repaint(); }
+	            			
+	            			if (currentBodyPart == 5) {
+	            				Paint.getStatusOfPerson(5, doneYet);
+	            				theFrame.repaint(); }
+	            			
+	            			if (currentBodyPart == 6) {
+	            				Paint.getStatusOfPerson(6, doneYet);
+	            				theFrame.repaint(); }
+	            			}
+	                } else {
+	                    window.txtLog.append("\n");
+	                    System.out.println("\n");
+	                }
+	            }
+	        
+	            catch (Exception e) {
+	                logText = "Failed to read data. (" + e.toString() + ")";
+	                window.txtLog.setForeground(Color.red);
+	                window.txtLog.append(logText + "\n");
+	            }
+	        	
+	        	char theChar = letter.charAt(0);
+	        	
+	        	if (CorrectOrNot == true) {
+	        		for (int i=0; i < (guesses.length); i++) {
+						if (theChar  == (charOfTheDay[i])){
+							guesses[i] = theChar;
+						}
+					}
+	        	}
+	
+	        	writeData(9);
+	        	
+	        	for (int i=0; i < guesses.length; i++) {
+		        	ascii = (int) guesses[i];
+		        	writeData(ascii);
+	        	}
+		        	
+	        	int clear = 19 - lettersInArray;
+	        	
+	        	for (int i=0; i < clear; i++)
+	        		writeData(20);
+        	}
+    		writeData(9);
+    	}
 
 	///////////////////////////////////////////////////////////////////////////////
 
